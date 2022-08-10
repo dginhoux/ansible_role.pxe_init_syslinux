@@ -1,0 +1,17 @@
+---
+pxe_packages:
+  - isc-dhcp-server
+  - tftpd-hpa
+  - tftp-hpa
+  # - pxelinux
+  # - syslinux
+  # - syslinux-efi
+  # - syslinux-common
+  - nginx
+
+pxe_services:
+  - isc-dhcp-server
+  - tftpd-hpa
+  - nginx
+
+pxe_tftp_config_file: /etc/default/tftpd-hpa

@@ -1,0 +1,30 @@
+---
+galaxy_info:
+  author: dginhoux
+  description: install all necessary for pxe deploy
+  company: ginhouxnet
+  license: MIT
+  min_ansible_version: 2.12
+  platforms:
+    - name: Debian
+      versions:
+        - buster
+        - bullseye
+    - name: Fedora
+      versions:
+        - 33
+        - 34
+        - 35
+        - 36
+        - 37
+    - name: CentOS
+      versions:
+        - 7
+        - 8
+    - name: EL
+      versions:
+        - 7
+        - 8
+  galaxy_tags:
+    - pxe
+  dependencies: []

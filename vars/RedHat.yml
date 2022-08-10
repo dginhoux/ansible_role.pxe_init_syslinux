@@ -1,0 +1,16 @@
+---
+pxe_packages:
+  - tftp-server
+  - dhcp-server
+  # - pxelinux
+  # - syslinux
+  # - syslinux-efi64
+  # - syslinux-tftpboot
+  - nginx
+
+pxe_services:
+  - dhcpd
+  - tftp
+  - nginx
+
+pxe_tftp_service_file: /etc/systemd/system/tftp.service

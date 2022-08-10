@@ -1,0 +1,12 @@
+---
+pxe_nginx_config_file: /etc/nginx/nginx.conf
+
+pxe_dir_base: /srv/tftp
+pxe_dir_structure:
+  - os
+  - sysprep/bios
+  - sysprep/efi64
+  - syslinux/bios
+  - syslinux/efi64
+  - menu/bios
+  - menu/efi64
