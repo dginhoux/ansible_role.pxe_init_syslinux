@@ -1,7 +1,7 @@
 ---
 
 galaxy_info:
-  role_name: ginhouxnet.pxe_init_syslinux
+  role_name: pxe_init_syslinux
   description: install all necessary for pxe deploy
   author: dginhoux
   company: ginhouxnet
