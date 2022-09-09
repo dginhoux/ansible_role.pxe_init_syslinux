@@ -6,7 +6,6 @@
   with_items:
     - "{{ pxe_packages }}"
 
-
 - name: "configure nginx"
   template:
     src: nginx.conf.j2
@@ -15,7 +14,6 @@
     owner: root
     group: root
 
-
 - name: create pxe directory structure
   file:
     state: directory
@@ -23,19 +21,17 @@
     mode: 0777
     owner: root
     group: root
-    recurse: "yes"
+    recurse: true
   loop: "{{ pxe_dir_structure }}"
-
 
 - name: "empty syslinux files"
   shell: "rm -rf {{ pxe_dir_base }}/syslinux/{{ item }}/*"
-  # file: 
+  # file:
   #   path: "{{ pxe_dir_base }}/syslinux/{{ item }}/*"
   #   state: absent
   loop:
     - bios
     - efi64
-
 
 - name: "copy syslinux files"
   unarchive:
@@ -48,23 +44,21 @@
     - bios
     - efi64
 
-
 # - name: "copy syslinux files"
 #   copy:
 #     src: "{{ item.src }}"
 #     dest: "{{ item.dest }}"
-#     remote_src: "yes"
+#     remote_src: true
 #     mode: 0777
 #     owner: root
 #     group: root
 #   with_items:
 #     - "{{ pxe_syslinux_files_redhat }}"
 
-
 - name: create symlinks of os for syslinux
   file:
-    src: '{{ item.src }}'
-    path: '{{ item.dest }}'
+    src: "{{ item.src }}"
+    path: "{{ item.dest }}"
     state: link
     mode: 0777
     owner: root
@@ -72,9 +66,14 @@
   with_items:
     - { src: "../../os", dest: "{{ pxe_dir_base }}/syslinux/bios/os" }
     - { src: "../../os", dest: "{{ pxe_dir_base }}/syslinux/efi64/os" }
-    - { src: "../../menu/bios", dest: "{{ pxe_dir_base }}/syslinux/bios/pxelinux.cfg" }
-    - { src: "../../menu/efi64", dest: "{{ pxe_dir_base }}/syslinux/efi64/pxelinux.cfg" }
-
+    - {
+        src: "../../menu/bios",
+        dest: "{{ pxe_dir_base }}/syslinux/bios/pxelinux.cfg",
+      }
+    - {
+        src: "../../menu/efi64",
+        dest: "{{ pxe_dir_base }}/syslinux/efi64/pxelinux.cfg",
+      }
 
 - name: configure tftp server
   copy:
@@ -93,15 +92,13 @@
     owner: root
     group: root
 
-
 - name: systemctl reload
   shell: systemctl daemon-reload
-
 
 - name: restart services
   service:
     name: "{{ item }}"
-    daemon_reload: "yes"
+    daemon_reload: true
     state: restarted
-    enabled: "yes"
+    enabled: true
   loop: "{{ pxe_services }}"
