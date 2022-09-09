@@ -10,7 +10,7 @@ In files/syslinux/, are provided version of syslinux for bios and efi64 systems.
 Requirements
 ------------
 
-This ansible role will only run on identified OS defined on meta/main.yml
+This role is built to only run on platforms defined in `meta/main.yml`
 
 
 Role Variables
@@ -23,8 +23,7 @@ View defaults/main.yml and vars/{{ ansible_os_family }}
 Dependencies
 ------------
 
-
-
+none
 
 Example Playbook
 ----------------
@@ -40,4 +39,4 @@ BSD
 Author Information
 ------------------
 
-Dany GINHOUX
+https://github.com/dginhoux/
