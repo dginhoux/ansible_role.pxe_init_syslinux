@@ -1,4 +1,4 @@
-ginhouxnet.pxe_init_syslinux
+Ansible Role : dginhoux.pxe_init_syslinux
 =========
 
 This ansible role install all necessary to built a PXE install server (isc-dhcp, tftp, nginx).
