@@ -1,0 +1,79 @@
+---
+- name: "install packages for pxe"
+  package:
+    name: "{{ item }}"
+    state: present
+  with_items:
+    - "{{ pxe_packages }}"
+
+- name: "configure nginx"
+  template:
+    src: nginx.conf.j2
+    dest: "{{ pxe_nginx_config_file }}"
+    mode: 0644
+    owner: root
+    group: root
+
+- name: create pxe directory structure
+  file:
+    state: directory
+    path: "{{ pxe_dir_base }}/{{ item }}"
+    mode: 0777
+    owner: root
+    group: root
+    recurse: true
+  loop: "{{ pxe_dir_structure }}"
+
+- name: "empty syslinux files"
+  shell: "rm -rf {{ pxe_dir_base }}/syslinux/{{ item }}/*"
+  # file:
+  #   path: "{{ pxe_dir_base }}/syslinux/{{ item }}/*"
+  #   state: absent
+  loop:
+    - bios
+    - efi64
+
+- name: "copy syslinux files"
+  unarchive:
+    src: "syslinux/{{ item }}.tar.gz"
+    dest: "{{ pxe_dir_base }}/syslinux/"
+    mode: 0777
+    owner: root
+    group: root
+  loop:
+    - bios
+    - efi64
+
+- name: create symlinks of os for syslinux
+  file:
+    src: "{{ item.src }}"
+    path: "{{ item.dest }}"
+    state: link
+    mode: 0777
+    owner: root
+    group: root
+  loop: "{{ pxe_tftp_symlinks }}"
+
+- name: configure tftp server
+  copy:
+    dest: "{{ pxe_tftp_config_file }}"
+    content: |
+      # Ansible managed
+      TFTP_USERNAME="tftp"
+      TFTP_DIRECTORY="/srv/tftp"
+      TFTP_ADDRESS="0.0.0.0:69"
+      TFTP_OPTIONS="--secure -v"
+    mode: 0644
+    owner: root
+    group: root
+
+# - name: systemctl reload
+#   shell: systemctl daemon-reload
+
+- name: restart services
+  service:
+    name: "{{ item }}"
+    daemon_reload: true
+    state: restarted
+    enabled: true
+  loop: "{{ pxe_services }}"

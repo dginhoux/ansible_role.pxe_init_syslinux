@@ -21,7 +21,7 @@
     mode: 0777
     owner: root
     group: root
-    recurse: "yes"
+    recurse: true
   loop: "{{ pxe_dir_structure }}"
 
 - name: "empty syslinux files"
@@ -44,17 +44,6 @@
     - bios
     - efi64
 
-# - name: "copy syslinux files"
-#   copy:
-#     src: "{{ item.src }}"
-#     dest: "{{ item.dest }}"
-#     remote_src: "yes"
-#     mode: 0777
-#     owner: root
-#     group: root
-#   with_items:
-#     - "{{ pxe_syslinux_files_debian }}"
-
 - name: create symlinks of os for syslinux
   file:
     src: "{{ item.src }}"
@@ -63,38 +52,23 @@
     mode: 0777
     owner: root
     group: root
-  with_items:
-    - { src: "../../os", dest: "{{ pxe_dir_base }}/syslinux/bios/os" }
-    - { src: "../../os", dest: "{{ pxe_dir_base }}/syslinux/efi64/os" }
-    - {
-        src: "../../menu/bios",
-        dest: "{{ pxe_dir_base }}/syslinux/bios/pxelinux.cfg",
-      }
-    - {
-        src: "../../menu/efi64",
-        dest: "{{ pxe_dir_base }}/syslinux/efi64/pxelinux.cfg",
-      }
+  loop: "{{ pxe_tftp_symlinks }}"
 
 - name: configure tftp server
   copy:
     dest: "{{ pxe_tftp_config_file }}"
-    content: |
-      # Ansible managed
-      TFTP_USERNAME="tftp"
-      TFTP_DIRECTORY="/srv/tftp"
-      TFTP_ADDRESS="0.0.0.0:69"
-      TFTP_OPTIONS="--secure -v"
+    content: "{{ pxe_tftp_config }}"
     mode: 0644
     owner: root
     group: root
 
-- name: systemctl reload
-  shell: systemctl daemon-reload
+# - name: systemctl reload
+#   shell: systemctl daemon-reload
 
 - name: restart services
   service:
     name: "{{ item }}"
-    daemon_reload: "yes"
+    daemon_reload: true
     state: restarted
-    enabled: "yes"
+    enabled: true
   loop: "{{ pxe_services }}"

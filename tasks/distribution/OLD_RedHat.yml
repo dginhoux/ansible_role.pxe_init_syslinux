@@ -44,17 +44,6 @@
     - bios
     - efi64
 
-# - name: "copy syslinux files"
-#   copy:
-#     src: "{{ item.src }}"
-#     dest: "{{ item.dest }}"
-#     remote_src: true
-#     mode: 0777
-#     owner: root
-#     group: root
-#   with_items:
-#     - "{{ pxe_syslinux_files_redhat }}"
-
 - name: create symlinks of os for syslinux
   file:
     src: "{{ item.src }}"
@@ -63,17 +52,7 @@
     mode: 0777
     owner: root
     group: root
-  with_items:
-    - { src: "../../os", dest: "{{ pxe_dir_base }}/syslinux/bios/os" }
-    - { src: "../../os", dest: "{{ pxe_dir_base }}/syslinux/efi64/os" }
-    - {
-        src: "../../menu/bios",
-        dest: "{{ pxe_dir_base }}/syslinux/bios/pxelinux.cfg",
-      }
-    - {
-        src: "../../menu/efi64",
-        dest: "{{ pxe_dir_base }}/syslinux/efi64/pxelinux.cfg",
-      }
+  loop: "{{ pxe_tftp_symlinks }}"
 
 - name: configure tftp server
   copy:
@@ -92,8 +71,8 @@
     owner: root
     group: root
 
-- name: systemctl reload
-  shell: systemctl daemon-reload
+# - name: systemctl reload
+#   shell: systemctl daemon-reload
 
 - name: restart services
   service:

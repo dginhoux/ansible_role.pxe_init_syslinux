@@ -2,6 +2,7 @@
 pxe_nginx_config_file: /etc/nginx/nginx.conf
 
 pxe_dir_base: /srv/tftp
+
 pxe_dir_structure:
   - os
   - sysprep/bios
@@ -10,3 +11,13 @@ pxe_dir_structure:
   - syslinux/efi64
   - menu/bios
   - menu/efi64
+
+pxe_tftp_symlinks:
+  - src: "../../os"
+    dest: "{{ pxe_dir_base }}/syslinux/bios/os"
+  - src: "../../os"
+    dest: "{{ pxe_dir_base }}/syslinux/efi64/os"
+  - src: "../../menu/bios"
+    dest: "{{ pxe_dir_base }}/syslinux/bios/pxelinux.cfg"
+  - src: "../../menu/efi64"
+    dest: "{{ pxe_dir_base }}/syslinux/efi64/pxelinux.cfg"

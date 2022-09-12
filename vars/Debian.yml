@@ -15,3 +15,10 @@ pxe_services:
   - nginx
 
 pxe_tftp_config_file: /etc/default/tftpd-hpa
+
+pxe_tftp_config: |
+  # Ansible managed
+  TFTP_USERNAME="tftp"
+  TFTP_DIRECTORY="/srv/tftp"
+  TFTP_ADDRESS="0.0.0.0:69"
+  TFTP_OPTIONS="--secure -v"
