@@ -1,13 +1,13 @@
 ---
 - name: "install packages for pxe"
-  package:
+  ansible.builtin.package:
     name: "{{ item }}"
     state: present
   with_items:
     - "{{ pxe_packages }}"
 
 - name: "configure nginx"
-  template:
+  ansible.builtin.template:
     src: nginx.conf.j2
     dest: "{{ pxe_nginx_config_file }}"
     mode: 0644
@@ -15,7 +15,7 @@
     group: root
 
 - name: create pxe directory structure
-  file:
+  ansible.builtin.file:
     state: directory
     path: "{{ pxe_dir_base }}/{{ item }}"
     mode: 0777
@@ -25,8 +25,8 @@
   loop: "{{ pxe_dir_structure }}"
 
 - name: "empty syslinux files"
-  shell: "rm -rf {{ pxe_dir_base }}/syslinux/{{ item }}/*"
-  # file:
+  ansible.builtin.shell: "rm -rf {{ pxe_dir_base }}/syslinux/{{ item }}/*"
+  # ansible.builtin.file:
   #   path: "{{ pxe_dir_base }}/syslinux/{{ item }}/*"
   #   state: absent
   loop:
@@ -45,7 +45,7 @@
     - efi64
 
 - name: create symlinks of os for syslinux
-  file:
+  ansible.builtin.file:
     src: "{{ item.src }}"
     path: "{{ item.dest }}"
     state: link
@@ -55,7 +55,7 @@
   loop: "{{ pxe_tftp_symlinks }}"
 
 - name: configure tftp server
-  copy:
+  ansible.builtin.copy:
     dest: "{{ pxe_tftp_config_file }}"
     content: |
       # Ansible managed
@@ -68,10 +68,10 @@
     group: root
 
 # - name: systemctl reload
-#   shell: systemctl daemon-reload
+#   ansible.builtin.shell: systemctl daemon-reload
 
 - name: restart services
-  service:
+  ansible.builtin.service:
     name: "{{ item }}"
     daemon_reload: true
     state: restarted
