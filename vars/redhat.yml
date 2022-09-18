@@ -1,0 +1,28 @@
+---
+pxe_packages:
+  - tftp-server
+  - dhcp-server
+  # - pxelinux
+  # - syslinux
+  # - syslinux-efi64
+  # - syslinux-tftpboot
+  - nginx
+
+pxe_services:
+  - dhcpd
+  - tftp
+  - nginx
+
+pxe_tftp_config_file: /etc/systemd/system/tftp.service
+
+pxe_tftp_config: |
+  # Ansible managed
+  [Unit]
+  Description=Tftp Server
+  Requires=tftp.socket
+  Documentation=man:in.tftpd
+  [Service]
+  ExecStart=/usr/sbin/in.tftpd --secure -v /srv/tftp
+  StandardInput=socket
+  [Install]
+  Also=tftp.socket

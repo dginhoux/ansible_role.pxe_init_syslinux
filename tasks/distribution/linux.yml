@@ -57,12 +57,7 @@
 - name: configure tftp server
   ansible.builtin.copy:
     dest: "{{ pxe_tftp_config_file }}"
-    content: |
-      # Ansible managed
-      TFTP_USERNAME="tftp"
-      TFTP_DIRECTORY="/srv/tftp"
-      TFTP_ADDRESS="0.0.0.0:69"
-      TFTP_OPTIONS="--secure -v"
+    content: "{{ pxe_tftp_config }}"
     mode: 0644
     owner: root
     group: root
