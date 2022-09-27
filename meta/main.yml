@@ -1,7 +1,7 @@
 ---
 galaxy_info:
   role_name: pxe_init_syslinux
-  description: install all necessary for pxe deploy
+  description: dginhoux.pxe_init_syslinux
   author: Dany GINHOUX
   company: dginhoux
   license: MIT
