@@ -16,7 +16,7 @@ In files/syslinux/, are provided version of syslinux for bios and efi64 systems.
 
 This role require a supported platform.<br />
 It will skip process with unsupported platform to avoid any compatibility problem.<br />
-This behaviour can be bypassed by settings the following variable `asserts_bypass=True`.
+This behaviour can be bypassed by settings the following variable `skip_check_platform_compatibility=True`.
 
 | Platform | Versions |
 |----------|----------|
