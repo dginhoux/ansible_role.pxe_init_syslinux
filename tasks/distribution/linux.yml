@@ -1,64 +1,64 @@
 ---
 - name: "install packages for pxe"
+  with_items:
+    - "{{ pxe_packages }}"
   ansible.builtin.package:
     name: "{{ item }}"
     state: present
-  with_items:
-    - "{{ pxe_packages }}"
 
 - name: "configure nginx"
   ansible.builtin.template:
     src: nginx.conf.j2
     dest: "{{ pxe_nginx_config_file }}"
-    mode: 0644
+    mode: "0644"
     owner: root
     group: root
 
 - name: create pxe directory structure
+  loop: "{{ pxe_dir_structure }}"
   ansible.builtin.file:
     state: directory
     path: "{{ pxe_dir_base }}/{{ item }}"
-    mode: 0777
+    mode: "0777"
     owner: root
     group: root
     recurse: true
-  loop: "{{ pxe_dir_structure }}"
 
 - name: "empty syslinux files"
+  loop:
+    - bios
+    - efi64
   ansible.builtin.shell: "rm -rf {{ pxe_dir_base }}/syslinux/{{ item }}/*"
   # ansible.builtin.file:
   #   path: "{{ pxe_dir_base }}/syslinux/{{ item }}/*"
   #   state: absent
-  loop:
-    - bios
-    - efi64
 
 - name: "copy syslinux files"
-  unarchive:
-    src: "syslinux/{{ item }}.tar.gz"
-    dest: "{{ pxe_dir_base }}/syslinux/"
-    mode: 0777
-    owner: root
-    group: root
   loop:
     - bios
     - efi64
+  ansible.builtin.unarchive:
+    src: "syslinux/{{ item }}.tar.gz"
+    dest: "{{ pxe_dir_base }}/syslinux/"
+    mode: "0777"
+    owner: root
+    group: root
 
 - name: create symlinks of os for syslinux
+  loop: "{{ pxe_tftp_symlinks }}"
   ansible.builtin.file:
     src: "{{ item.src }}"
     path: "{{ item.dest }}"
     state: link
-    mode: 0777
+    mode: "0777"
     owner: root
     group: root
-  loop: "{{ pxe_tftp_symlinks }}"
 
 - name: configure tftp server
   ansible.builtin.copy:
     dest: "{{ pxe_tftp_config_file }}"
     content: "{{ pxe_tftp_config }}"
-    mode: 0644
+    mode: "0644"
     owner: root
     group: root
 
@@ -66,9 +66,9 @@
 #   ansible.builtin.shell: systemctl daemon-reload
 
 - name: restart services
+  loop: "{{ pxe_services }}"
   ansible.builtin.service:
     name: "{{ item }}"
     daemon_reload: true
     state: restarted
     enabled: true
-  loop: "{{ pxe_services }}"
