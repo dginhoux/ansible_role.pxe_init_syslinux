@@ -28,7 +28,8 @@
   loop:
     - bios
     - efi64
-  ansible.builtin.shell: "rm -rf {{ pxe_dir_base }}/syslinux/{{ item }}/*"
+  ansible.builtin.command:
+    cmd: "rm -rf {{ pxe_dir_base }}/syslinux/{{ item }}/*"
   # ansible.builtin.file:
   #   path: "{{ pxe_dir_base }}/syslinux/{{ item }}/*"
   #   state: absent
@@ -63,7 +64,8 @@
     group: root
 
 # - name: systemctl reload
-#   ansible.builtin.shell: systemctl daemon-reload
+#   ansible.builtin.command:
+#     cmd: systemctl daemon-reload
 
 - name: restart services
   loop: "{{ pxe_services }}"
