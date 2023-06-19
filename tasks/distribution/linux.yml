@@ -1,12 +1,12 @@
 ---
-- name: "install packages for pxe"
+- name: Install packages for pxe
   with_items:
     - "{{ pxe_packages }}"
   ansible.builtin.package:
     name: "{{ item }}"
     state: present
 
-- name: "configure nginx"
+- name: Configure nginx
   ansible.builtin.template:
     src: nginx.conf.j2
     dest: "{{ pxe_nginx_config_file }}"
@@ -14,7 +14,7 @@
     owner: root
     group: root
 
-- name: create pxe directory structure
+- name: Create pxe directory structure
   loop: "{{ pxe_dir_structure }}"
   ansible.builtin.file:
     state: directory
@@ -24,7 +24,7 @@
     group: root
     recurse: true
 
-- name: "empty syslinux files"
+- name: Empty syslinux files
   loop:
     - bios
     - efi64
@@ -34,7 +34,7 @@
   #   path: "{{ pxe_dir_base }}/syslinux/{{ item }}/*"
   #   state: absent
 
-- name: "copy syslinux files"
+- name: Copy syslinux files
   loop:
     - bios
     - efi64
@@ -45,7 +45,7 @@
     owner: root
     group: root
 
-- name: create symlinks of os for syslinux
+- name: Create symlinks of os for syslinux
   loop: "{{ pxe_tftp_symlinks }}"
   ansible.builtin.file:
     src: "{{ item.src }}"
@@ -55,7 +55,7 @@
     owner: root
     group: root
 
-- name: configure tftp server
+- name: Configure tftp server
   ansible.builtin.copy:
     dest: "{{ pxe_tftp_config_file }}"
     content: "{{ pxe_tftp_config }}"
@@ -67,7 +67,7 @@
 #   ansible.builtin.command:
 #     cmd: systemctl daemon-reload
 
-- name: restart services
+- name: Restart services
   loop: "{{ pxe_services }}"
   ansible.builtin.service:
     name: "{{ item }}"
